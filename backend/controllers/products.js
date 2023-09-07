@@ -1,5 +1,6 @@
 import { Product } from "../models/products.js";
 import ErrorHandler from "../middlewares/errorHandler.js";
+import ApiFeatures from "../utils/features.js";
 
 //Creating product--Admin
 export const createProduct = async (req, res, next) => {
@@ -35,12 +36,21 @@ export const getProductDetails = async (req, res, next) => {
 };
 
 //Get all prodcuts
-export const myProducts = async (req, res) => {
+export const myProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const resultPerPage = 10;
+    const productCount = await Product.countDocuments();
+
+    const ApiFeature = new ApiFeatures(Product.find(), req.query)
+      .search()
+      .filter()
+      .pagination(resultPerPage);
+
+    const products = await ApiFeature.query;
 
     res.status(201).json({
       products,
+      productCount,
       success: true,
     });
   } catch (error) {
