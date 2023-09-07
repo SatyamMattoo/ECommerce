@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import productRouter from "./routes/products.js";
 import { error } from "./middlewares/errorHandler.js";
+import userRouter  from "./routes/users.js"
 
 export const app = express();
 
@@ -11,6 +12,7 @@ config({ path: "backend/configs/config.env" });
 //Middlewares
 app.use(express.json());
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/users", userRouter);
 
 //Error Middleware
 app.use(error);
