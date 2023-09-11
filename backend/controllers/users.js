@@ -6,6 +6,9 @@ import { setCookie } from "../utils/cookieSetter.js";
 export const createUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    if(password.length<8) return next(new ErrorHandler("Password must be atleast 8 characters", 400));
+
     let user = await User.findOne({ email });
 
     if (user) return next(new ErrorHandler("User already Exists", 400));
@@ -24,11 +27,13 @@ export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
+    if(!email || !password) return next(new ErrorHandler("Please Enter Email and Password", 400))
+
     const user = await User.findOne({ email }).select("+password");
-    if (!user) return next(new ErrorHandler("Register First", 404));
+    if (!user) return next(new ErrorHandler("Invalid email or password", 404));
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return next(new ErrorHandler("Invalid Credentials", 401));
+    if (!isPasswordValid) return next(new ErrorHandler("Invalid email or password", 401));
 
     setCookie(res, user, `Logged in as ${user.name}`, 200);
   } catch (error) {
