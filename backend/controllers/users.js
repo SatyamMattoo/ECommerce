@@ -137,3 +137,103 @@ export const resetPassword = async (req, res, next) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+
+//get User details
+export const getUserDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//update user details
+export const updateUserDetails = async (req, res, next) => {
+  const newDetails = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+
+  const user = await User.findByIdAndUpdate(req.user.id, newDetails, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success: true,
+    user,
+  });
+};
+
+//get all users
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//get a user
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    console.log(req.params.id);
+    if (!user) return next(new ErrorHandler("User not found", 404));
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//update user role
+export const updateUserRoles = async (req, res, next) => {
+  try {
+    const newDetails = {
+      name: req.body.name,
+      email: req.body.email,
+      role: req.body.role,
+    };
+
+    const user = await User.findByIdAndUpdate(req.user.id, newDetails, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Role updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//delete a user
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if (!user) return next(new ErrorHandler("User not found", 404));
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import { error } from "./middlewares/errorHandler.js";
 import productRouter from "./routes/products.js";
 import userRouter  from "./routes/users.js"
+import orderRouter  from "./routes/orders.js"
 
 export const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/orders", orderRouter);
 
 //Error Middleware
 app.use(error);
