@@ -15,17 +15,16 @@ const router = express.Router();
 
 //Routes
 router.get("/my", myProducts);
-router.route("/:id").get(getProductDetails);
 
 router.post(
-  "admin/new",
+  "/admin/new",
   isAuthenticated,
   authorizeRoles("admin"),
   createProduct
 );
 
 router
-  .route("admin/:id")
+  .route("/admin/product/:id")
   .put(isAuthenticated, authorizeRoles("admin"), updateProduct)
   .delete(isAuthenticated, authorizeRoles("admin"), deleteProduct);
 
@@ -35,4 +34,5 @@ router
   .delete(isAuthenticated, deleteReview);
 router.get("/reviews/:id", getAllReviews);
 
+router.route("/:id").get(getProductDetails);
 export default router;
